@@ -11,7 +11,12 @@ Write-Host "Java (needed to start Gradle)"
 $java = if ($env:JAVA_HOME -and (Test-Path "$env:JAVA_HOME\bin\java.exe")) { "$env:JAVA_HOME\bin\java.exe" } else { (Get-Command java -ErrorAction SilentlyContinue).Source }
 if ($java) {
     $ver = (& $java -version 2>&1 | Where-Object { $_ -notmatch "^Picked up" } | Select-Object -First 1).ToString()
-    if ($ver -match 'version "(\d+)') { if ([int]$Matches[1] -ge 17) { Ok $ver } else { Bad "Java 17+ required, found: $ver" } }
+    if ($ver -match 'version "(\d+)') {
+        $major = [int]$Matches[1]
+        if ($major -lt 17) { Bad "Java 17-24 required, found: $ver" }
+        elseif ($major -gt 24) { Bad "Java $major is too new for Gradle 8.14 (max 24): $ver"; Hint "point JAVA_HOME to a JDK 21, see docs\SETUP.md, step 2" }
+        else { Ok $ver }
+    }
     if ($env:JAVA_HOME) { Ok "JAVA_HOME=$env:JAVA_HOME" } else { Bad "JAVA_HOME is not set"; Hint "see docs\SETUP.md, step 2" }
 } else { Bad "No Java found"; Hint "install Android Studio (bundles a JDK) and set JAVA_HOME, see docs\SETUP.md" }
 

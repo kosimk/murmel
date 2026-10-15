@@ -17,7 +17,9 @@ fi
 if [ -n "$JAVA" ]; then
   VER="$("$JAVA" -version 2>&1 | grep -v "^Picked up" | head -1)"
   MAJOR="$(echo "$VER" | sed -E 's/.*version "([0-9]+).*/\1/')"
-  if [ "${MAJOR:-0}" -ge 17 ] 2>/dev/null; then ok "$VER"; else bad "Java 17+ required, found: $VER"; fi
+  if [ "${MAJOR:-0}" -lt 17 ] 2>/dev/null; then bad "Java 17-24 required, found: $VER"
+  elif [ "${MAJOR:-0}" -gt 24 ] 2>/dev/null; then bad "Java $MAJOR is too new for Gradle 8.14 (max 24): $VER"; hint "point JAVA_HOME to a JDK 21, see docs/SETUP.md, step 2"
+  else ok "$VER"; fi
   [ -n "$JAVA_HOME" ] && ok "JAVA_HOME=$JAVA_HOME" || { bad "JAVA_HOME is not set"; hint "see docs/SETUP.md, step 2"; }
 else
   bad "No Java found"; hint "install Android Studio (bundles a JDK) and set JAVA_HOME, see docs/SETUP.md"
