@@ -12,6 +12,8 @@ Download it from [developer.android.com/studio](https://developer.android.com/st
 
 > Android Studio also bundles its own Java, but recent versions bundle **Java 25**, which is too new for this project's Gradle 8.14 (it supports Java up to 24). So we install a separate **JDK 21** (long-term support) for builds.
 > Inside Android Studio, if it asks "Please Select Gradle JVM", choose **Use JVM 21**.
+>
+> The project pins the build JVM in `gradle/gradle-daemon-jvm.properties` (Gradle's *daemon toolchain*), so the build itself always runs on JDK 21 in Android Studio, VS Code and the terminal. If Studio offers to "Migrate to Gradle Daemon toolchain", that's already done; choose **Ignore**.
 
 ## 2. Install JDK 21 and set environment variables permanently
 
