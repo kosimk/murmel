@@ -9,4 +9,9 @@
     <string name="recording">Ich höre zu …</string>
     <string name="timeline_empty">Noch keine Einträge.</string>
     <string name="privacy_badge">Nur auf diesem Gerät</string>
+    <string name="problem_microphone_denied">Ohne Zugriff auf das Mikrofon kann Murmel nicht zuhören.</string>
+    <string name="problem_recognition_unavailable">Spracherkennung direkt auf dem Gerät ist auf diesem Handy nicht verfügbar.</string>
+    <string name="problem_language_unavailable">Die deutsche Spracherkennung ist auf diesem Handy nicht installiert.</string>
+    <string name="problem_nothing_heard">Nichts verstanden. Bitte noch einmal versuchen.</string>
+    <string name="problem_failed">Die Spracherkennung hat nicht funktioniert. Bitte noch einmal versuchen.</string>
 </resources>

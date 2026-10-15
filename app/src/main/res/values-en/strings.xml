@@ -8,4 +8,9 @@
     <string name="recording">Listening…</string>
     <string name="timeline_empty">No entries yet.</string>
     <string name="privacy_badge">Only on this device</string>
+    <string name="problem_microphone_denied">Murmel can\'t listen without access to the microphone.</string>
+    <string name="problem_recognition_unavailable">On-device speech recognition isn\'t available on this phone.</string>
+    <string name="problem_language_unavailable">German speech recognition isn\'t installed on this phone.</string>
+    <string name="problem_nothing_heard">Didn\'t catch that. Please try again.</string>
+    <string name="problem_failed">Speech recognition didn\'t work. Please try again.</string>
 </resources>
