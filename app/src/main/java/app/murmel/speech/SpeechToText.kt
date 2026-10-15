@@ -25,6 +25,20 @@ enum class SpeechError {
     Other,
 }
 
+/** Progress of fetching the on-device language pack. */
+sealed interface LanguageDownload {
+    data class Running(val percent: Int) : LanguageDownload
+
+    /** The system will download later (e.g. once on Wi-Fi). Ends the flow. */
+    data object Scheduled : LanguageDownload
+
+    /** The pack is installed. Ends the flow. */
+    data object Done : LanguageDownload
+
+    /** Ends the flow. */
+    data object Failed : LanguageDownload
+}
+
 /**
  * Turns speech into text, on the device only.
  *
@@ -38,4 +52,13 @@ interface SpeechToText {
 
     /** Stop recording and deliver the final result of the current [listen]. */
     fun stop()
+
+    /** Whether this device lets apps ask for a missing language pack (Android 13+). */
+    fun canDownloadLanguage(): Boolean
+
+    /**
+     * Ask the system's on-device recognizer to fetch the language pack.
+     * The system downloads it; this app needs no network access.
+     */
+    fun downloadLanguage(): Flow<LanguageDownload>
 }

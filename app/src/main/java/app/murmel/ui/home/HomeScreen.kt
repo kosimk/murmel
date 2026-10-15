@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,8 +23,10 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.murmel.R
+import app.murmel.speech.LanguageDownload
 import app.murmel.ui.theme.MurmelTheme
 
 /**
@@ -64,11 +69,16 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Fact
                 PackageManager.PERMISSION_GRANTED
             if (granted) viewModel.onRecordTapped() else requestMicrophone.launch(Manifest.permission.RECORD_AUDIO)
         },
+        onDownloadLanguageClick = viewModel::onDownloadLanguageTapped,
     )
 }
 
 @Composable
-private fun HomeContent(state: HomeUiState, onRecordClick: () -> Unit) {
+private fun HomeContent(
+    state: HomeUiState,
+    onRecordClick: () -> Unit,
+    onDownloadLanguageClick: () -> Unit,
+) {
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -104,25 +114,32 @@ private fun HomeContent(state: HomeUiState, onRecordClick: () -> Unit) {
                     .verticalScroll(rememberScrollState()),
                 contentAlignment = Alignment.Center,
             ) {
-                when {
-                    state.transcript.isNotEmpty() -> Text(
-                        text = state.transcript,
-                        style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 24.dp),
-                    )
-                    state.problem != null -> Text(
-                        text = stringResource(state.problem.message),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 24.dp),
-                    )
-                    !state.isListening -> Text(
-                        text = stringResource(R.string.timeline_empty),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                        modifier = Modifier.padding(vertical = 24.dp),
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    when {
+                        state.transcript.isNotEmpty() -> Text(
+                            text = state.transcript,
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 24.dp),
+                        )
+                        state.problem != null -> Text(
+                            text = stringResource(state.problem.message),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 24.dp),
+                        )
+                        !state.isListening -> Text(
+                            text = stringResource(R.string.timeline_empty),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                            modifier = Modifier.padding(vertical = 24.dp),
+                        )
+                    }
+                    LanguageDownloadSection(
+                        download = state.languageDownload,
+                        offerDownload = state.offerLanguageDownload,
+                        onDownloadClick = onDownloadLanguageClick,
                     )
                 }
             }
@@ -151,6 +168,57 @@ private fun HomeContent(state: HomeUiState, onRecordClick: () -> Unit) {
     }
 }
 
+/** Offer and progress for fetching the German on-device speech pack. */
+@Composable
+private fun LanguageDownloadSection(
+    download: LanguageDownload?,
+    offerDownload: Boolean,
+    onDownloadClick: () -> Unit,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        when (download) {
+            is LanguageDownload.Running -> {
+                LinearProgressIndicator(
+                    progress = { download.percent / 100f },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Text(stringResource(R.string.language_download_running, download.percent))
+            }
+            LanguageDownload.Scheduled -> Text(
+                text = stringResource(R.string.language_download_scheduled),
+                textAlign = TextAlign.Center,
+            )
+            LanguageDownload.Done -> Text(
+                text = stringResource(R.string.language_download_done),
+                textAlign = TextAlign.Center,
+            )
+            LanguageDownload.Failed -> Text(
+                text = stringResource(R.string.language_download_failed),
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+            )
+            null -> Unit
+        }
+        if (offerDownload) {
+            Button(
+                onClick = onDownloadClick,
+                modifier = Modifier.heightIn(min = 56.dp),
+            ) {
+                Text(stringResource(R.string.language_download))
+            }
+            Text(
+                text = stringResource(R.string.language_download_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
 @get:StringRes
 private val HomeProblem.message: Int
     get() = when (this) {
@@ -165,7 +233,19 @@ private val HomeProblem.message: Int
 @Composable
 private fun HomeIdlePreview() {
     MurmelTheme {
-        HomeContent(state = HomeUiState(), onRecordClick = {})
+        HomeContent(state = HomeUiState(), onRecordClick = {}, onDownloadLanguageClick = {})
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF14161A)
+@Composable
+private fun HomeLanguageMissingPreview() {
+    MurmelTheme {
+        HomeContent(
+            state = HomeUiState(problem = HomeProblem.LanguageUnavailable, offerLanguageDownload = true),
+            onRecordClick = {},
+            onDownloadLanguageClick = {},
+        )
     }
 }
 
@@ -176,6 +256,7 @@ private fun HomeTranscriptPreview() {
         HomeContent(
             state = HomeUiState(isListening = true, transcript = "Um drei gestillt, links, dann eine Stunde geschlafen"),
             onRecordClick = {},
+            onDownloadLanguageClick = {},
         )
     }
 }

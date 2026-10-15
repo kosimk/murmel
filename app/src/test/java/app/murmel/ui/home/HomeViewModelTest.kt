@@ -1,5 +1,6 @@
 package app.murmel.ui.home
 
+import app.murmel.speech.LanguageDownload
 import app.murmel.speech.SpeechError
 import app.murmel.speech.SpeechEvent
 import app.murmel.speech.SpeechToText
@@ -103,6 +104,78 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `missing language pack offers the download where Android supports it`() {
+        viewModel.onRecordTapped()
+        speech.finish(SpeechEvent.Failed(SpeechError.LanguageUnavailable))
+
+        assertTrue(viewModel.state.value.offerLanguageDownload)
+    }
+
+    @Test
+    fun `no download offer on Android versions without it`() {
+        speech.canDownload = false
+        viewModel.onRecordTapped()
+        speech.finish(SpeechEvent.Failed(SpeechError.LanguageUnavailable))
+
+        assertFalse(viewModel.state.value.offerLanguageDownload)
+    }
+
+    @Test
+    fun `other errors do not offer the download`() {
+        viewModel.onRecordTapped()
+        speech.finish(SpeechEvent.Failed(SpeechError.NothingHeard))
+
+        assertFalse(viewModel.state.value.offerLanguageDownload)
+    }
+
+    @Test
+    fun `download shows progress and clears the problem when done`() {
+        viewModel.onRecordTapped()
+        speech.finish(SpeechEvent.Failed(SpeechError.LanguageUnavailable))
+
+        viewModel.onDownloadLanguageTapped()
+        assertFalse(viewModel.state.value.offerLanguageDownload)
+
+        speech.downloads.trySend(LanguageDownload.Running(42))
+        assertEquals(LanguageDownload.Running(42), viewModel.state.value.languageDownload)
+
+        speech.downloads.trySend(LanguageDownload.Done)
+        speech.downloads.close()
+        val state = viewModel.state.value
+        assertEquals(LanguageDownload.Done, state.languageDownload)
+        assertNull(state.problem)
+        assertFalse(state.offerLanguageDownload)
+    }
+
+    @Test
+    fun `scheduled download hides the button`() {
+        viewModel.onRecordTapped()
+        speech.finish(SpeechEvent.Failed(SpeechError.LanguageUnavailable))
+
+        viewModel.onDownloadLanguageTapped()
+        speech.downloads.trySend(LanguageDownload.Scheduled)
+        speech.downloads.close()
+
+        val state = viewModel.state.value
+        assertEquals(LanguageDownload.Scheduled, state.languageDownload)
+        assertFalse(state.offerLanguageDownload)
+    }
+
+    @Test
+    fun `failed download offers it again`() {
+        viewModel.onRecordTapped()
+        speech.finish(SpeechEvent.Failed(SpeechError.LanguageUnavailable))
+
+        viewModel.onDownloadLanguageTapped()
+        speech.downloads.trySend(LanguageDownload.Failed)
+        speech.downloads.close()
+
+        val state = viewModel.state.value
+        assertEquals(LanguageDownload.Failed, state.languageDownload)
+        assertTrue(state.offerLanguageDownload)
+    }
+
+    @Test
     fun `denied microphone is reported`() {
         viewModel.onMicrophoneDenied()
 
@@ -112,15 +185,20 @@ class HomeViewModelTest {
 
 private class FakeSpeechToText : SpeechToText {
     var available = true
+    var canDownload = true
     var stopCalls = 0
     var events = Channel<SpeechEvent>(Channel.UNLIMITED)
         private set
+    val downloads = Channel<LanguageDownload>(Channel.UNLIMITED)
 
     override fun isAvailable() = available
     override fun listen(): Flow<SpeechEvent> = events.receiveAsFlow()
     override fun stop() {
         stopCalls++
     }
+
+    override fun canDownloadLanguage() = canDownload
+    override fun downloadLanguage(): Flow<LanguageDownload> = downloads.receiveAsFlow()
 
     /** Send the last event and end the flow, like the real recognizer does. */
     fun finish(event: SpeechEvent) {

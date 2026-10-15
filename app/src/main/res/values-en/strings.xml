@@ -13,4 +13,10 @@
     <string name="problem_language_unavailable">German speech recognition isn\'t installed on this phone.</string>
     <string name="problem_nothing_heard">Didn\'t catch that. Please try again.</string>
     <string name="problem_failed">Speech recognition didn\'t work. Please try again.</string>
+    <string name="language_download">Download German</string>
+    <string name="language_download_note">Android downloads the language pack. Murmel itself has no internet access.</string>
+    <string name="language_download_running">Downloading… %1$d%%</string>
+    <string name="language_download_scheduled">Android will download the language pack as soon as it can (e.g. on Wi-Fi). Then just tap record again.</string>
+    <string name="language_download_done">German speech recognition is ready.</string>
+    <string name="language_download_failed">The download didn\'t work.</string>
 </resources>

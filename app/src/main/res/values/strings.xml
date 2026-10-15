@@ -14,4 +14,10 @@
     <string name="problem_language_unavailable">Die deutsche Spracherkennung ist auf diesem Handy nicht installiert.</string>
     <string name="problem_nothing_heard">Nichts verstanden. Bitte noch einmal versuchen.</string>
     <string name="problem_failed">Die Spracherkennung hat nicht funktioniert. Bitte noch einmal versuchen.</string>
+    <string name="language_download">Deutsch herunterladen</string>
+    <string name="language_download_note">Android lädt das Sprachpaket herunter. Murmel selbst hat keinen Internetzugang.</string>
+    <string name="language_download_running">Wird heruntergeladen … %1$d %%</string>
+    <string name="language_download_scheduled">Android lädt das Sprachpaket, sobald es kann (z. B. im WLAN). Danach einfach wieder auf Aufnahme tippen.</string>
+    <string name="language_download_done">Deutsche Spracherkennung ist bereit.</string>
+    <string name="language_download_failed">Der Download hat nicht geklappt.</string>
 </resources>

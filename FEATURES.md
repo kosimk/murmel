@@ -20,9 +20,11 @@ Legend: ✅ done · 🔜 next · ⬜ planned · 💶 behind the one-time unlock
 
 ## Milestone 1 — Technical spike on the Fairphone 6 🔜
 Goal: prove the core pipeline works on a mid-range phone before building real features.
-- 🔜 Request microphone permission on first tap
-- 🔜 German speech → text with the on-device `SpeechRecognizer`
-- 🔜 Show the raw transcript on screen
+- ✅ Request microphone permission on first tap
+- ✅ German speech → text with the on-device `SpeechRecognizer`
+- ✅ Show the raw transcript on screen
+- ✅ Offer to download the German on-device speech pack when it is missing (Android 13+; Android does the download, Murmel stays offline)
+  - Finding: the Fairphone 6 (Android 16) ships only `en-US` for on-device recognition, served by Android System Intelligence. Packs installed via "Speech Services by Google" are not used by it.
 - ⬜ Run a small model (Gemma 3 1B or Qwen3 0.6B) via LiteRT-LM on the transcript
 - ⬜ Return structured JSON (`type`, `time`, `amount`, `side`, `note`, `exam`)
 - ⬜ Measure: transcription quality, model latency, phone temperature after 10 runs

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import app.murmel.speech.LanguageDownload
 import app.murmel.speech.OnDeviceSpeechToText
 import app.murmel.speech.SpeechError
 import app.murmel.speech.SpeechEvent
@@ -20,6 +21,9 @@ data class HomeUiState(
     val isListening: Boolean = false,
     val transcript: String = "",
     val problem: HomeProblem? = null,
+    /** Show the "download German" button. */
+    val offerLanguageDownload: Boolean = false,
+    val languageDownload: LanguageDownload? = null,
 )
 
 /** Why the last recording produced no transcript. Shown as a short message. */
@@ -60,9 +64,32 @@ class HomeViewModel(private val speech: SpeechToText) : ViewModel() {
                         is SpeechEvent.Final -> _state.update {
                             it.copy(transcript = event.text.ifEmpty { it.transcript })
                         }
-                        is SpeechEvent.Failed -> _state.update { it.copy(problem = event.error.toProblem()) }
+                        is SpeechEvent.Failed -> _state.update {
+                            it.copy(
+                                problem = event.error.toProblem(),
+                                offerLanguageDownload = event.error == SpeechError.LanguageUnavailable &&
+                                    speech.canDownloadLanguage(),
+                            )
+                        }
                     }
                 }
+        }
+    }
+
+    fun onDownloadLanguageTapped() {
+        if (_state.value.languageDownload is LanguageDownload.Running) return
+        _state.update { it.copy(offerLanguageDownload = false, languageDownload = LanguageDownload.Running(0)) }
+        viewModelScope.launch {
+            speech.downloadLanguage().collect { download ->
+                _state.update {
+                    when (download) {
+                        LanguageDownload.Done -> it.copy(problem = null, languageDownload = download)
+                        // Let the user try again.
+                        LanguageDownload.Failed -> it.copy(offerLanguageDownload = true, languageDownload = download)
+                        else -> it.copy(languageDownload = download)
+                    }
+                }
+            }
         }
     }
 
