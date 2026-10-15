@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Murmel</string>
+    <string name="home_title">What happened?</string>
+    <string name="home_hint">Tap and just talk. Everything stays on your phone.</string>
+    <string name="record_start">Start recording</string>
+    <string name="record_stop">Stop recording</string>
+    <string name="recording">Listening…</string>
+    <string name="timeline_empty">No entries yet.</string>
+    <string name="privacy_badge">Only on this device</string>
+</resources>

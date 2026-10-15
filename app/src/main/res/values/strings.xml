@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default language is German (Germany-first product). English lives in values-en. -->
+<resources>
+    <string name="app_name">Murmel</string>
+    <string name="home_title">Was ist passiert?</string>
+    <string name="home_hint">Tippen und einfach erzählen. Alles bleibt auf deinem Handy.</string>
+    <string name="record_start">Aufnahme starten</string>
+    <string name="record_stop">Aufnahme beenden</string>
+    <string name="recording">Ich höre zu …</string>
+    <string name="timeline_empty">Noch keine Einträge.</string>
+    <string name="privacy_badge">Nur auf diesem Gerät</string>
+</resources>
