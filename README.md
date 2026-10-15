@@ -9,6 +9,8 @@ Tap, talk, done. Speech recognition and the small language model that turns a br
 
 ## Getting started
 
+**First time on this computer?** Follow [docs/SETUP.md](docs/SETUP.md) once (Java + Android SDK paths), then run the VS Code task **Check setup**.
+
 1. Install [Android Studio](https://developer.android.com/studio) (latest stable).
 2. **File → Open** and choose this folder. Let Gradle sync; it downloads the Android SDK pieces and dependencies on first run.
    If Studio suggests updating the Android Gradle Plugin or library versions, accepting is fine.

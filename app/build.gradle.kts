@@ -44,6 +44,11 @@ android {
     }
 }
 
+kotlin {
+    // Compile with JDK 17; Gradle downloads it automatically if it isn't installed.
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
