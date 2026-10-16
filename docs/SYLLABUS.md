@@ -33,21 +33,23 @@ Next chapter to write: K3 Flow. Remaining chapters are written when the builder 
 - D1 Room: entities, DAO, Flow queries, migrations (deep)
 - D2 SQLCipher, Keystore, BiometricPrompt (working)
 - U1 Navigation Compose (working)
-- T1 java.time, relative times, U-windows, DST (deep)
+- T1 java.time, relative dates, pregnancy week (SSW) from due date, DST (deep)
 - B1 WorkManager + notifications (working)
 - F1 Backup/restore via Storage Access Framework (working)
 - L3 Shipping the model via Play Asset Delivery (working)
 - Q1 Testing: JUnit, Turbine, Compose UI tests, eval in CI (deep)
 - U2 Accessibility & de/en strings (working)
 - R3 Release on Google Play: signing, R8, Data safety (working)
-**Gate 2 → M3:** trace an entry through every layer/thread; missing migration; feed at 02:30 on 25 Oct 2026 (DST); lost-phone threat model. Exercise: restore an old-version backup on a fresh install.
+**Gate 2 → M3:** trace an entry through every layer/thread; missing migration; appointment at 02:30 on 25 Oct 2026 (DST); SSW on the day after the due date; lost-phone threat model. Exercise: restore an old-version backup on a fresh install.
 
 ## Stage 3 — One-time unlock (Milestone 3)
 - P1 Play Billing, non-consumable, offline restore (working)
-- P2 Doctor summary PDF, record not advice (working)
+- P2 Appointment summary PDF, record not advice (working)
 - P3 Glance widgets, quick record (working)
-- P4 Multiple children: migration of existing data (working)
-**Gate 3 → v1:** unlock on a new offline phone; PDF wording guardrail. Exercise: write the second-child migration plan before code.
+**Gate 3 → v1:** unlock on a new offline phone; PDF wording guardrail. Exercise: write the birth-handoff migration plan (pregnancy → baby log) before code.
+
+## Stage 4 — Baby log (Milestone 4)
+Units are planned when Milestone 3 ships. Expected: U-windows from the birth date, log-type schema migration, P4 multiple children (migration of existing data).
 
 ## Later (v2+, ungated)
 LoRA fine-tuning · whisper.cpp/NDK/JNI · cloud-free two-parent sync · iOS (Swift, Foundation Models)
@@ -56,3 +58,8 @@ LoRA fine-tuning · whisper.cpp/NDK/JNI · cloud-free two-parent sync · iOS (Sw
 1. Coroutines before Flow.
 2. No first-launch model download (would need INTERNET) → Play Asset Delivery only.
 3. Parser tests and the first ~20 eval brain dumps are part of Milestone 1.
+
+## Plan changes from the pregnancy-first pivot (2026-10-16)
+1. T1 covers SSW from the due date; U-windows move to Stage 4.
+2. Gate 2 DST question uses an appointment instead of a feed.
+3. Multiple children (P4) moves to the new Stage 4; Gate 3 exercise becomes the birth-handoff migration.

@@ -119,3 +119,46 @@ Narrow from "another baby tracker" to "the one built for the German system." Pri
 Stay a faithful **private record**, NOT a medical advisor.
 - Safe: logging "the doctor said X."
 - Off-limits: interpreting results or suggesting what to do — that strays into the health territory to avoid.
+
+
+---
+
+## Pivot: pregnancy first (2026-10-16)
+
+**Decision:** start with pregnancy, not the baby tracker. The baby log becomes the follow-on milestone in the same app, with the same one-time unlock.
+
+### The job
+Catch every question the moment it comes up (at 3 a.m., on a walk, in the car) and have it ready in the ten-minute appointment. Questions for the Ärztin/Arzt, the Hebamme, the partner, or yourself. Then record what was said, and organize the next appointments.
+
+**Positioning story:** "Say it when you think of it. Have it ready when you're in the room. It stays on your phone."
+
+### Why this is a stronger entry point
+- **Sharper, easier-to-explain pain.** Forgotten questions in short appointments; voice capture fits even better than for feed logging.
+- **Different kind of crowding.** German pregnancy apps (AOK Schwanger, famileon, Babelli, BabyCare, Preglife, Schwangerschaft+) are content and calendar apps: week-by-week info, checklists, reminders. None is built around capturing *your own* questions and closing the loop at the appointment, and none is voice-first and on-device.
+- **Privacy is a known weak spot.** Mozilla's Privacy Not Included flags Schwangerschaft+; research projects have found pregnancy apps sharing sensitive data with third parties. Honest note: Babelli stores data locally in guest mode, so "local" alone isn't unique. "Voice + on-device" still is.
+- **Natural funnel.** Users arrive ~9 months before birth and move straight into the baby log.
+- **Easier AI job.** Sorting what was said (question / to-do / appointment / answer / note, and for whom) is far more forgiving for a 1B model than extracting exact amounts and times.
+- **Distribution channel.** Hebammen and Geburtsvorbereitungskurse can recommend it; the baby tracker has no equivalent.
+
+### The core loop
+1. **Capture** a brain dump; it becomes one or more questions, to-dos, appointments or notes.
+2. **Collect** open questions by person; the next appointment shows the right ones.
+3. **Appointment mode:** tick questions off, dictate the answer, stored as "what X said". This is the key feature and keeps Murmel a record.
+4. **Organize** appointments; add them to the calendar via the Android insert intent (no permission, no network).
+5. **Partner** items go out through the share sheet; no sync needed in v1.
+6. **Vorsorge timeline** by pregnancy week, as gentle planning prompts.
+
+### Risks to take seriously
+- **The guardrail gets harder.** Every entry is a medical question by nature. Murmel never answers, triages, or says "normal". One fixed, hand-written notice for acute symptoms (practice, Kreißsaal, 112); nothing generated. Staying a pure record also keeps the app clear of medical-device (MDR) territory.
+- **Pregnancy loss.** Some users will lose a pregnancy. Design a calm, respectful end/archive flow from day one; all reminders stop.
+- **eMutterpass.** The ePA can hold the electronic Mutterpass. Don't compete with it or copy lab values; Murmel is the personal side.
+- **Partner gap shows up earlier.** Share sheet for v1; cloud-free sync stays a v2 topic.
+- **Weaker "one hand" story.** The wedge is "never lose a thought" rather than "can't tap".
+
+### What it changes
+- Milestone 1 spike: same pipeline, new JSON schema and pregnancy eval set.
+- Milestone 2: questions inbox, appointment mode, appointments, Vorsorge timeline, safety and loss flows replace the feed/diaper/sleep log.
+- Baby log moves to Milestone 4.
+
+### Validation
+Two fake-door landing pages ("Fragen-Buch für die Schwangerschaft" vs. "Baby-Tracker"), compare signups. Read forums and 1-star reviews for "I forgot my questions" pain. Talk to 2–3 Hebammen.
