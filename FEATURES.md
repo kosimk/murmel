@@ -1,10 +1,14 @@
 # Murmel – Feature List
 
-*Working title. Voice-first, fully on-device baby log for parents in Germany.*
+*Working title. Voice-first, fully on-device companion for expecting parents in Germany, continuing into a baby log after birth.*
 
-**Product promise:** Tap, talk, done. Everything stays on your phone.
+**Product promise:** Say it when you think of it. Have it ready when you're in the room. Everything stays on your phone.
 
-**Guardrail for every feature:** Murmel is a faithful private *record*, never a medical advisor. It logs what happened and what the doctor said. It never interprets, diagnoses or recommends.
+**Direction (2026-10-16):** pregnancy first, baby tracker second. The pregnancy app wins users ~9 months before birth and hands them over to the baby log. See "Pivot: pregnancy first" in `docs/brain-dump-app-brief.md`.
+
+**Guardrail for every feature:** Murmel is a faithful private *record*, never a medical advisor. It collects questions and records what the doctor or Hebamme said. It never answers a question, judges urgency, says what is "normal", interprets results or recommends anything. This matters more in pregnancy, because nearly every entry is a health question.
+
+**Learning gates:** each milestone starts only after the builder has passed the gate for the previous stage in `docs/SYLLABUS.md`.
 
 Legend: ✅ done · 🔜 next · ⬜ planned · 💶 behind the one-time unlock
 
@@ -13,81 +17,128 @@ Legend: ✅ done · 🔜 next · ⬜ planned · 💶 behind the one-time unlock
 ## Milestone 0 — Project setup ✅
 - ✅ Kotlin + Jetpack Compose project, Android 12+ (API 31)
 - ✅ German as default language, English as second
-- ✅ Dark theme by default (night feeds)
+- ✅ Dark theme by default
 - ✅ Home screen with one large, thumb-reachable record button (UI only)
 - ✅ Cloud backup and device transfer disabled; no INTERNET permission
 - ✅ CI builds a debug APK on every push
 
 ## Milestone 1 — Technical spike on the Fairphone 6 🔜
 Goal: prove the core pipeline works on a mid-range phone before building real features.
+*Gate before starting: Gate 0 in docs/SYLLABUS.md.*
 - 🔜 Request microphone permission on first tap
 - 🔜 German speech → text with the on-device `SpeechRecognizer`
 - 🔜 Show the raw transcript on screen
 - ⬜ Run a small model (Gemma 3 1B or Qwen3 0.6B) via LiteRT-LM on the transcript
-- ⬜ Return structured JSON (`type`, `time`, `amount`, `side`, `note`, `exam`)
+- ⬜ Return structured JSON, one or more items per brain dump:
+  - `type`: `question` | `todo` | `appointment` | `answer` | `note`
+  - `for`: `arzt` | `hebamme` | `partner` | `self` | `null`
+  - `when`: date/time if mentioned (appointments, to-dos), else `null`
+  - `with`: who the appointment is with, if mentioned
+  - `text`: the cleaned-up wording, staying close to what was said
+- ⬜ Unit tests for the JSON parser (valid, malformed and partial model output)
+- ⬜ Start the eval set: first ~20 realistic German pregnancy brain dumps → expected JSON (mix of questions for different people, appointments with relative dates, several items in one dump, rambling with no item)
 - ⬜ Measure: transcription quality, model latency, phone temperature after 10 runs
 - ⬜ Decision: keep built-in speech recognizer or switch to whisper.cpp
 
-## Milestone 2 — MVP (free core) ⬜
+## Milestone 2 — MVP: pregnancy companion (free core) ⬜
+*Gate before starting: Gate 1 in docs/SYLLABUS.md.*
+
 ### Capture
 - ⬜ One-tap voice capture from the home screen
-- ⬜ Free-form brain dump → one or more log entries ("fed at 3, left side, then slept an hour" → feed + sleep)
-- ⬜ Review screen: confirm or quickly fix what the model understood before saving
-- ⬜ Manual fallback: quick tap buttons for feed / diaper / sleep / note
-- ⬜ Times understood relative to now ("vor 20 Minuten", "um drei")
+- ⬜ Free-form brain dump → one or more items ("Hebamme fragen, ob ich noch schwimmen darf, und Lukas soll den Kinderwagen bestellen" → question for Hebamme + to-do for partner)
+- ⬜ Review screen: confirm or quickly fix type, person and date before saving
+- ⬜ Manual fallback: type a question or note
+- ⬜ Dates understood relative to now ("nächsten Dienstag", "in zwei Wochen", "am 3. um zehn")
 
-### Log types
-- ⬜ Feeding (breast left/right, bottle with amount)
-- ⬜ Diaper (wet / dirty)
-- ⬜ Sleep (start / end / duration)
-- ⬜ Free note (anything else)
+### Questions inbox
+- ⬜ Open questions grouped by person: Ärztin/Arzt, Hebamme, Partner, myself
+- ⬜ Reorder, edit, merge duplicates, delete
+- ⬜ Shown automatically on the next appointment with that person
 
-### Timeline
-- ⬜ Chronological day view
-- ⬜ "At a glance" header: last feed, last diaper, current awake/sleep time
-- ⬜ Edit and delete entries
+### Appointment mode (the core loop)
+- ⬜ Start from an appointment or from the inbox: large, readable list of that person's open questions
+- ⬜ Tick a question off as asked
+- ⬜ Dictate the answer under the question; stored as "what X said", with date and person
+- ⬜ After the visit: one voice note for anything else that was said ("Nächster Termin in vier Wochen, Blutwerte kommen per Post")
+- ⬜ Answered questions move to a searchable "Was gesagt wurde" archive
 
-### German check-ups (U-Untersuchungen)
-- ⬜ U1–U9 list with age windows based on the baby's birth date
-- ⬜ Gentle reminder when a U-window is coming up
-- ⬜ Voice note after a check-up, filed against the right U ("U4 lief gut, Arzt will die Hüfte beobachten")
+### Appointments
+- ⬜ Create appointments by voice or by hand (date, time, person/practice, place)
+- ⬜ "Add to calendar" via the `ACTION_INSERT` calendar intent (no calendar permission, no network)
+- ⬜ Reminder the evening before, listing the open questions for that appointment
+
+### Vorsorge timeline
+- ⬜ Onboarding asks for the due date (errechneter Termin); app shows the current SSW
+- ⬜ Usual Vorsorge rhythm and the three standard ultrasound windows mapped to SSW, as "usually due around" prompts, never as medical instructions (source: Mutterschafts-Richtlinien; check the current version before shipping)
+- ⬜ Early prompt to find a Hebamme (a known shortage in Germany)
+- ⬜ Prompts only remind the user to plan; they never say what a result means
+
+### Partner
+- ⬜ Partner questions and to-dos shared as plain text via the Android share sheet (WhatsApp, Signal, mail …)
+- ⬜ No sync in v1; the share sheet keeps the no-INTERNET promise
+
+### Safety and sensitivity
+- ⬜ One fixed, hand-written notice (not generated by the model), reachable from capture and the inbox: for acute symptoms, contact your practice, the Kreißsaal or 112. Text reviewed once, then frozen.
+- ⬜ The model never produces user-facing advice; its output only fills item fields
+- ⬜ Pregnancy loss: a calm, respectful way to end or archive a pregnancy; all SSW prompts and reminders stop immediately; no celebratory wording anywhere in that flow
+- ⬜ Neutral, non-cheerful default tone in reminders
 
 ### Privacy and trust
 - ⬜ Encrypted local database (Room + SQLCipher)
 - ⬜ Plain-language privacy screen: what is stored, where, and that nothing is sent
 - ⬜ Backup to a file the user saves themselves (and restore from it)
 - ⬜ App lock (fingerprint / PIN), optional
+- ⬜ Positioning vs. the eMutterpass in the ePA: Murmel holds the personal side (questions, notes, what was said), not official findings or lab values
 
 ### Onboarding
-- ⬜ Baby's name and birth date
-- ⬜ One-screen explanation: tap, talk, it stays on your phone
-- ⬜ First-launch model download (or Play Asset Delivery) with clear size info
+- ⬜ Due date (or "not sure yet")
+- ⬜ One-screen explanation: say it when you think of it, it stays on your phone
+- ⬜ Model delivered with the app via Play Asset Delivery, with clear size info. No in-app download: the app keeps no INTERNET permission.
 
 ## Milestone 3 — One-time unlock 💶
-*Proposal for the free vs. paid line. The free core stays fully usable forever; no history limits.*
-- 💶 Doctor summary export (PDF) for the Kinderarzt visit
-- 💶 Multiple children / twins
-- 💶 Pregnancy module (Mutterpass / Vorsorge appointments)
+*Gate before starting: Gate 2 in docs/SYLLABUS.md.*
+*Proposal for the free vs. paid line. The free core stays fully usable forever; no history limits. One purchase covers pregnancy and the baby log.*
+- 💶 Appointment summary export (PDF): open questions for the next visit, or "what was said" for a period. Record only, no interpretation.
 - 💶 Home-screen widget and lock-screen quick record
-- 💶 Simple patterns view (feeds per day, sleep per day), descriptive only
-- 💶 Custom log types (pumping, medication given, tummy time …)
+- 💶 Custom lists and people (e.g. Geburtsklinik, Frauenärztin vs. Vertretung, Doula)
+- 💶 Birth plan notes (Geburtswünsche) as a structured, shareable list
+- 💶 Admin to-do list (Mutterschutz, Elterngeld, Vaterschaftsanerkennung) as user-editable reminders, not legal advice
 - ⬜ Google Play Billing: one non-consumable in-app product
 
+## Milestone 4 — After birth: baby log ⬜
+*Continuation of the same app and the same unlock. Planned in detail once Milestone 3 ships.*
+- ⬜ Birth handoff: "Baby ist da" switches the app to the baby log; the pregnancy archive stays readable
+- ⬜ Questions inbox and appointment mode carry over unchanged (Kinderarzt, Hebamme im Wochenbett)
+- ⬜ Log types: feeding (breast left/right, bottle with amount), diaper (wet/dirty), sleep (start/end/duration), free note
+- ⬜ Chronological day view with "at a glance" header: last feed, last diaper, current awake/sleep time
+- ⬜ U1–U9 list with age windows from the birth date, gentle reminders, voice note filed against the right U
+- ⬜ JSON schema extended with `type: feed | diaper | sleep`, `amount`, `side`, `exam`; eval set extended accordingly
+- 💶 Doctor summary export for the Kinderarzt, multiple children / twins, simple patterns view (descriptive only), custom log types
+
 ## Later (v2 and beyond) ⬜
-- ⬜ Fine-tuned model for German baby-log extraction (LoRA, ~1,000–5,000 examples; seeded by the eval set)
+- ⬜ Fine-tuned model for German extraction (LoRA, ~1,000–5,000 examples; seeded by the eval set)
 - ⬜ whisper.cpp speech recognition for consistent quality on all phones
-- ⬜ Two-parent sync without a cloud (local Wi-Fi / Bluetooth / QR handoff)
+- ⬜ Two-parent sync without a cloud (local Wi-Fi / Bluetooth / QR handoff); matters from pregnancy on
 - ⬜ iOS version (Apple Foundation Models)
 - ⬜ Other countries with structured check-up systems
 
 ## Explicitly out of scope
 - ❌ Accounts, cloud sync, server backend
 - ❌ Analytics or ad SDKs
-- ❌ Medical interpretation, symptom checking, advice of any kind
+- ❌ Answering questions, symptom checking, urgency triage, "is this normal", advice of any kind
+- ❌ Storing or interpreting official findings or lab values (that is the Mutterpass / eMutterpass)
+- ❌ Week-by-week content ("your baby is the size of a mango"); others do this, it isn't the wedge
 - ❌ Social or community features
 - ❌ Subscriptions
+- ❌ INTERNET permission (also check the merged manifest: libraries must not add it)
+
+## Validation before Milestone 2
+- ⬜ Two fake-door landing pages: "Fragen-Buch für die Schwangerschaft" vs. "Baby-Tracker"; compare signups
+- ⬜ Read forum threads and 1-star reviews of German pregnancy apps for "I forgot my questions" pain
+- ⬜ Talk to 2–3 Hebammen: would they recommend it in a Geburtsvorbereitungskurs?
 
 ## Quality
-- ⬜ Eval set: ~50 realistic German brain dumps → expected JSON; run on every prompt/model change
-- ⬜ Unit tests for parsing and U-window calculations
-- ⬜ UI test for the capture → review → save flow
+- ⬜ Eval set: grows from ~20 brain dumps (Milestone 1) to ~50 → expected JSON; run on every prompt/model change
+- ⬜ Unit tests for parsing (from Milestone 1), relative dates and SSW calculation
+- ⬜ UI test for the capture → review → save flow and for appointment mode (ask → answer → archive)
+- ⬜ Guardrail check on all user-facing strings (see docs/QUALITY.md 4e)
