@@ -6,6 +6,8 @@
 
 **Guardrail for every feature:** Murmel is a faithful private *record*, never a medical advisor. It logs what happened and what the doctor said. It never interprets, diagnoses or recommends.
 
+**Learning gates:** each milestone starts only after the builder has passed the gate for the previous stage in `SYLLABUS.md`.
+
 Legend: ✅ done · 🔜 next · ⬜ planned · 💶 behind the one-time unlock
 
 ---
@@ -20,15 +22,19 @@ Legend: ✅ done · 🔜 next · ⬜ planned · 💶 behind the one-time unlock
 
 ## Milestone 1 — Technical spike on the Fairphone 6 🔜
 Goal: prove the core pipeline works on a mid-range phone before building real features.
+*Gate before starting: Gate 0 in SYLLABUS.md.*
 - 🔜 Request microphone permission on first tap
 - 🔜 German speech → text with the on-device `SpeechRecognizer`
 - 🔜 Show the raw transcript on screen
 - ⬜ Run a small model (Gemma 3 1B or Qwen3 0.6B) via LiteRT-LM on the transcript
 - ⬜ Return structured JSON (`type`, `time`, `amount`, `side`, `note`, `exam`)
+- ⬜ Unit tests for the JSON parser (valid, malformed and partial model output)
+- ⬜ Start the eval set: first ~20 realistic German brain dumps → expected JSON
 - ⬜ Measure: transcription quality, model latency, phone temperature after 10 runs
 - ⬜ Decision: keep built-in speech recognizer or switch to whisper.cpp
 
 ## Milestone 2 — MVP (free core) ⬜
+*Gate before starting: Gate 1 in SYLLABUS.md.*
 ### Capture
 - ⬜ One-tap voice capture from the home screen
 - ⬜ Free-form brain dump → one or more log entries ("fed at 3, left side, then slept an hour" → feed + sleep)
@@ -61,9 +67,10 @@ Goal: prove the core pipeline works on a mid-range phone before building real fe
 ### Onboarding
 - ⬜ Baby's name and birth date
 - ⬜ One-screen explanation: tap, talk, it stays on your phone
-- ⬜ First-launch model download (or Play Asset Delivery) with clear size info
+- ⬜ Model delivered with the app via Play Asset Delivery, with clear size info. No in-app download: the app keeps no INTERNET permission.
 
 ## Milestone 3 — One-time unlock 💶
+*Gate before starting: Gate 2 in SYLLABUS.md.*
 *Proposal for the free vs. paid line. The free core stays fully usable forever; no history limits.*
 - 💶 Doctor summary export (PDF) for the Kinderarzt visit
 - 💶 Multiple children / twins
@@ -86,8 +93,9 @@ Goal: prove the core pipeline works on a mid-range phone before building real fe
 - ❌ Medical interpretation, symptom checking, advice of any kind
 - ❌ Social or community features
 - ❌ Subscriptions
+- ❌ INTERNET permission (also check the merged manifest: libraries must not add it)
 
 ## Quality
-- ⬜ Eval set: ~50 realistic German brain dumps → expected JSON; run on every prompt/model change
-- ⬜ Unit tests for parsing and U-window calculations
+- ⬜ Eval set: grows from ~20 brain dumps (Milestone 1) to ~50 → expected JSON; run on every prompt/model change
+- ⬜ Unit tests for parsing (from Milestone 1) and U-window calculations
 - ⬜ UI test for the capture → review → save flow
