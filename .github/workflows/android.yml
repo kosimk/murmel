@@ -8,14 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      # Also caches Gradle's downloads. We don't use gradle/actions: from v6 its
+      # caching is a proprietary component with separate terms of use.
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
-
-      - uses: gradle/actions/setup-gradle@v4
+          cache: gradle
 
       - name: Unit tests
         run: ./gradlew test --stacktrace
@@ -24,7 +25,7 @@ jobs:
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: murmel-debug-apk
           path: app/build/outputs/apk/debug/*.apk
