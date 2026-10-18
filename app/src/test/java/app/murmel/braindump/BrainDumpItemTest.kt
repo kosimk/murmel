@@ -28,11 +28,15 @@ class BrainDumpItemTest {
 
     @Test
     fun `every known person value maps to its Person`() {
-        assertEquals(Person.Arzt, "arzt".toPerson())
-        assertEquals(Person.Arzt, "Ärztin".toPerson())
-        assertEquals(Person.Hebamme, "hebamme".toPerson())
-        assertEquals(Person.Partner, "partner".toPerson())
-        assertEquals(Person.Self, "self".toPerson())
+        val expected = mapOf(
+            "doctor" to Person.Doctor,
+            "midwife" to Person.Midwife,
+            "partner" to Person.Partner,
+            "self" to Person.Self,
+        )
+
+        val actual = expected.keys.associateWith { it.toPerson() }
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -43,11 +47,11 @@ class BrainDumpItemTest {
 
     @Test
     fun `items with the same values are equal, copy changes only what is named`() {
-        val question = BrainDumpItem(ItemType.Question, "Darf ich noch schwimmen?", forPerson = Person.Hebamme)
+        val question = BrainDumpItem(ItemType.Question, "Darf ich noch schwimmen?", forPerson = Person.Midwife)
 
-        assertEquals(question, BrainDumpItem(ItemType.Question, "Darf ich noch schwimmen?", forPerson = Person.Hebamme))
+        assertEquals(question, BrainDumpItem(ItemType.Question, "Darf ich noch schwimmen?", forPerson = Person.Midwife))
 
-        val forDoctor = question.copy(forPerson = Person.Arzt)
+        val forDoctor = question.copy(forPerson = Person.Doctor)
         assertEquals("Darf ich noch schwimmen?", forDoctor.text)
         assertNotEquals(question, forDoctor)
     }

@@ -31,7 +31,7 @@ Goal: prove the core pipeline works on a mid-range phone before building real fe
 - ⬜ Run a small model (Gemma 3 1B or Qwen3 0.6B) via LiteRT-LM on the transcript
 - ⬜ Return structured JSON, one or more items per brain dump:
   - `type`: `question` | `todo` | `appointment` | `answer` | `note`
-  - `for`: `arzt` | `hebamme` | `partner` | `self` | `null`
+  - `for`: `doctor` | `midwife` | `partner` | `self` | `null`
   - `when`: date/time if mentioned (appointments, to-dos), else `null`
   - `with`: who the appointment is with, if mentioned
   - `text`: the cleaned-up wording, staying close to what was said

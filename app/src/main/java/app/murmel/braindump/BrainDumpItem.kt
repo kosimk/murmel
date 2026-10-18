@@ -23,7 +23,7 @@ data class BrainDumpItem(
 
 enum class ItemType { Question, Todo, Appointment, Answer, Note }
 
-enum class Person { Arzt, Hebamme, Partner, Self }
+enum class Person { Doctor, Midwife, Partner, Self }
 
 /** The model's `type` value, e.g. "question", as an [ItemType]. Null if it isn't one we know. */
 fun String.toItemType(): ItemType? = when (trim().lowercase()) {
@@ -36,12 +36,12 @@ fun String.toItemType(): ItemType? = when (trim().lowercase()) {
 }
 
 /**
- * The model's `for` value, e.g. "hebamme", as a [Person].
+ * The model's `for` value, e.g. "midwife", as a [Person].
  * Null if the value is missing or isn't one we know.
  */
 fun String?.toPerson(): Person? = when (this?.trim()?.lowercase()) {
-    "arzt", "ärztin" -> Person.Arzt
-    "hebamme" -> Person.Hebamme
+    "doctor" -> Person.Doctor
+    "midwife" -> Person.Midwife
     "partner" -> Person.Partner
     "self" -> Person.Self
     else -> null
