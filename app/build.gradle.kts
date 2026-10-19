@@ -1,3 +1,5 @@
+import com.android.build.api.artifact.SingleArtifact
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -78,4 +80,42 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// CLAUDE.md rule 1: no INTERNET permission. Libraries can add permissions through
+// manifest merging, so check the final merged manifest of each release build, not
+// only our own AndroidManifest.xml. Runs with `./gradlew check` and in CI.
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        val noInternetCheck = tasks.register<NoInternetPermissionCheck>(
+            "check${variant.name.replaceFirstChar { it.uppercase() }}NoInternet",
+        ) {
+            mergedManifest.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
+            variantName.set(variant.name)
+        }
+        tasks.named("check") { dependsOn(noInternetCheck) }
+    }
+}
+
+abstract class NoInternetPermissionCheck : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val mergedManifest: RegularFileProperty
+
+    @get:Input
+    abstract val variantName: Property<String>
+
+    @TaskAction
+    fun verify() {
+        val manifest = mergedManifest.get().asFile
+        if ("android.permission.INTERNET" in manifest.readText()) {
+            throw GradleException(
+                "The merged ${variantName.get()} manifest requests android.permission.INTERNET " +
+                    "(CLAUDE.md rule 1: nothing leaves the phone).\n" +
+                    "Merged manifest: ${manifest.path}\n" +
+                    "To see which library adds it, search for INTERNET in " +
+                    "app/build/outputs/logs/manifest-merger-${variantName.get()}-report.txt",
+            )
+        }
+    }
 }

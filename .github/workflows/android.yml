@@ -21,6 +21,9 @@ jobs:
       - name: Unit tests
         run: ./gradlew test --stacktrace
 
+      - name: No INTERNET permission in the merged release manifest
+        run: ./gradlew checkReleaseNoInternet --stacktrace
+
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace
 
