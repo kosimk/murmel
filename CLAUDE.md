@@ -11,7 +11,7 @@ Murmel is a voice-first, fully on-device companion for expecting parents in Germ
 
 ## Conventions
 - Kotlin, Jetpack Compose, Material 3. MVVM: `ui/<feature>/` holds `XScreen.kt` + `XViewModel.kt`.
-- Code, identifiers and JSON schema codes are in English (`Person.Midwife`, `"midwife"`). User-facing text comes only from resources (German + English). ). German-specific terms (Mutterpass, SSW, U-Untersuchung, Elterngeld …) stay German in every UI language.
+- Code, identifiers and JSON schema codes are in English (`Person.Midwife`, `"midwife"`). User-facing text comes only from resources (German + English). German-specific terms (Mutterpass, SSW, U-Untersuchung, Elterngeld …) stay German in every UI language.
 - State via `StateFlow`; side effects in coroutines on `viewModelScope`.
 - Heavy work (model loading, inference, speech) never on the main thread.
 - Dependency versions only in `gradle/libs.versions.toml`.

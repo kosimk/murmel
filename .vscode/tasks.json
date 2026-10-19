@@ -33,6 +33,15 @@
       "problemMatcher": []
     },
     {
+      "label": "Open test report",
+      "type": "shell",
+      "command": "xdg-open app/build/reports/tests/testDebugUnitTest/index.html",
+      "osx": { "command": "open app/build/reports/tests/testDebugUnitTest/index.html" },
+      "windows": { "command": "start app\\build\\reports\\tests\\testDebugUnitTest\\index.html" },
+      "presentation": { "reveal": "silent" },
+      "problemMatcher": []
+    },
+    {
       "label": "Show app logs (logcat)",
       "type": "shell",
       "command": "adb logcat --pid=$(adb shell pidof -s app.murmel)",
