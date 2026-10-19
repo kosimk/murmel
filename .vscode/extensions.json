@@ -3,6 +3,6 @@
   "recommendations": [
     "anthropic.claude-code",
     "vscjava.vscode-gradle",
-    "fwcd.kotlin"
+    "JetBrains.kotlin-server"
   ]
 }

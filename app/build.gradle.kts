@@ -49,6 +49,15 @@ kotlin {
     jvmToolchain(17)
 }
 
+// Print failed tests with message and stack trace in the terminal, so the
+// "File.kt:42" lines are clickable in the IDE instead of only in the HTML report.
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events("failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
