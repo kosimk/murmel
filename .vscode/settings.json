@@ -6,6 +6,11 @@
   "java.import.gradle.enabled": false,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+  // Highlight Gradle scripts as Kotlin. The Kotlin extension doesn't understand
+  // Gradle's script setup yet, so some names stay uncoloured; Gradle is the judge.
+  "files.associations": {
+    "*.gradle.kts": "kotlin"
+  },
   "[kotlin]": {
     "editor.defaultFormatter": "JetBrains.kotlin-server",
     "editor.formatOnSave": true
