@@ -7,15 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,7 +36,7 @@ import app.murmel.ui.theme.MurmelTheme
  */
 @Composable
 fun HomeScreen() {
-    var isRecording by rememberSaveable { mutableStateOf(false) }
+    var isListening by rememberSaveable { mutableStateOf(false) }
 
     Scaffold { innerPadding ->
         Column(
@@ -60,7 +55,7 @@ fun HomeScreen() {
             Spacer(Modifier.height(32.dp))
 
             Text(
-                text = stringResource(if (isRecording) R.string.recording else R.string.home_title),
+                text = stringResource(if (isListening) R.string.recording else R.string.home_title),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
             )
@@ -88,19 +83,10 @@ fun HomeScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
             ) {
-                LargeFloatingActionButton(
-                    onClick = { isRecording = !isRecording },
-                    shape = CircleShape,
-                    modifier = Modifier.size(112.dp),
-                ) {
-                    Icon(
-                        imageVector = if (isRecording) Icons.Filled.Stop else Icons.Filled.Mic,
-                        contentDescription = stringResource(
-                            if (isRecording) R.string.record_stop else R.string.record_start,
-                        ),
-                        modifier = Modifier.size(48.dp),
-                    )
-                }
+                RecordButton(
+                    isListening = isListening,
+                    onToggle = { isListening = !isListening },
+                )
                 Spacer(Modifier.height(24.dp))
             }
         }
