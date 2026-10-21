@@ -8,4 +8,16 @@
     <string name="recording">Listening…</string>
     <string name="timeline_empty">No entries yet.</string>
     <string name="privacy_badge">Only on this device</string>
+    <!-- SSW stays German in every language (CLAUDE.md conventions). -->
+    <string name="glance_pregnancy_week">SSW %1$d</string>
+    <string name="glance_next_appointment">Next appointment: %1$s · %2$s</string>
+    <string name="glance_no_appointment">No appointment yet</string>
+    <plurals name="glance_open_questions">
+        <item quantity="one">%d open question</item>
+        <item quantity="other">%d open questions</item>
+    </plurals>
+    <string name="person_doctor">Doctor</string>
+    <string name="person_midwife">Midwife</string>
+    <string name="person_partner">Partner</string>
+    <string name="person_self">Myself</string>
 </resources>

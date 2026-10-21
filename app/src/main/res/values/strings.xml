@@ -9,4 +9,15 @@
     <string name="recording">Ich höre zu …</string>
     <string name="timeline_empty">Noch keine Einträge.</string>
     <string name="privacy_badge">Nur auf diesem Gerät</string>
+    <string name="glance_pregnancy_week">SSW %1$d</string>
+    <string name="glance_next_appointment">Nächster Termin: %1$s · %2$s</string>
+    <string name="glance_no_appointment">Kein Termin eingetragen</string>
+    <plurals name="glance_open_questions">
+        <item quantity="one">%d offene Frage</item>
+        <item quantity="other">%d offene Fragen</item>
+    </plurals>
+    <string name="person_doctor">Ärztin/Arzt</string>
+    <string name="person_midwife">Hebamme</string>
+    <string name="person_partner">Partner:in</string>
+    <string name="person_self">Ich selbst</string>
 </resources>
