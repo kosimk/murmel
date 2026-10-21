@@ -16,6 +16,7 @@ Next chapter to write: K3 Flow. Remaining chapters are written when the builder 
 - C1 Compose UI building blocks: layouts, Modifier, Material 3, previews (deep) — chapter ✅
 - C2 State in Compose (deep) — chapter ✅, unit understood ✅
 **Gate 0 → M1:** no-INTERNET manifest; remember vs rotation; why RecordButton is stateless. Exercise: review an agent-built "At a glance" header line by line.
+**Gate 0 passed ✅ (2026-10-21).** Exercise adapted to the pregnancy app (SSW, next appointment, open questions). Gaps closed during the gate: INTERNET is not granted unless declared; padding inside vs. outside a Surface; `?.let` is safe navigation.
 
 ## Stage 1 — Technical spike (Milestone 1)
 - K2 Coroutines & threads (deep) — chapter ✅

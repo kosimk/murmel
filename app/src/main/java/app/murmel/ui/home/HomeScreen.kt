@@ -52,6 +52,9 @@ fun HomeScreen() {
                 leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
             )
 
+            Spacer(Modifier.height(16.dp))
+            AtAGlanceHeader(glance = PlaceholderAtAGlance)
+
             Spacer(Modifier.height(32.dp))
 
             Text(
